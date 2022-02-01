@@ -32,7 +32,9 @@ jobs:
           docker login -u $username -p $password
       
       - name: Docker build
-        run: docker build . --file  dockerfile --tag bajpayinaman/todo-app:$(date +%s)
+        env: 
+          date: $(date +%s)
+        run: docker build . --file  dockerfile --tag bajpayinaman/todo-app:$date
         
       - name: Docker push
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/todo-app
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/todo-app:$date
