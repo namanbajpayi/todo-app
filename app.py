@@ -15,20 +15,20 @@ emp = {"error":"No task is Present, Db is empty"}
 def rest(n):   
     if request.method == 'GET':
         if len(tasks)==0:
-            return jsonify(emp)
+            return jsonify(emp), 200
         for i in range(len(tasks)):
             if tasks[i]['id']==n:
-                return jsonify(tasks[i])        
-        return jsonify(err)
+                return jsonify(tasks[i]), 200        
+        return jsonify(err),404
 
     if request.method == 'DELETE':
         if len(tasks)==0:
-            return jsonify(emp)
+            return jsonify(emp), 200
         for i in range(len(tasks)):
             if tasks[i]['id']==n:
                 tasks.pop(i)
-                return jsonify({"msg":"done"})        
-        return jsonify(err)
+                return jsonify({"msg":"done"}), 200      
+        return jsonify(err), 404
 
     if request.method == 'PUT':    
         global modified_at
@@ -37,13 +37,13 @@ def rest(n):
         print(data)  
         modified_at= stamp.strftime('%Y-%m-%d-%H-%M-%S')    
         if len(tasks) == 0:
-            return jsonify(emp)
+            return jsonify(emp), 200
         for i in range(len(tasks)):
             if tasks[i]['id']==n: 
                 tasks[i]["task_name"]=data["task_name"]
                 tasks[i]["modified_at"]=modified_at  
-                return jsonify(tasks[i])       
-        return jsonify(err)     
+                return jsonify(tasks[i]), 200      
+        return jsonify(err), 404    
 
 @app.route('/task', methods=['GET','POST'])
 def rest2():
@@ -55,9 +55,9 @@ def rest2():
         if request.method == 'GET':
             if len(tasks)==0:
                 emp={"error":"No task is Present, Db is empty"}
-                return jsonify(emp)     
+                return jsonify(emp), 200    
             else:
-                return jsonify(tasks)       
+                return jsonify(tasks) , 200      
         if request.method == 'POST':  
             stamp= dt.now(IST)
             data = request.get_json()
@@ -73,10 +73,10 @@ def rest2():
                     }
                 count=count+1 
                 tasks.append(result) 
-                return jsonify(x)                
+                return jsonify(x) ,201               
             for i in range(len(tasks)):
                 if tasks[i]["task_name"]==data["task_name"]:    
-                    return jsonify(y)
+                    return jsonify(y), 200
             result={
                 "id":count,
                 "task_name": data["task_name"],
@@ -85,7 +85,7 @@ def rest2():
                 }
             count=count+1 
             tasks.append(result)  
-            return jsonify(x) 
+            return jsonify(x) , 201
         
 
 if __name__ == "__main__":
